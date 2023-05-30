@@ -1,14 +1,52 @@
 
-const mymodule = require('./functions.js')
+const { absolutePath, resolvePath, extMd, findFilesInDir, isDir, readFile, findLinksInContent } = require('./functions.js')
+const path = require('path');
 
-const folder = process.argv[2];
-const ext = process.argv[3];
+const userPath = process.argv[2];
+const extension = process.argv[3];
+const resolvedUserPath = absolutePath(userPath) ? userPath : resolvePath(userPath);
 
-mymodule(folder, ext, (err, files) => {
+isDir(resolvedUserPath)
+  .then((isDirectory) => {
+    if (isDirectory) {
+      return findFilesInDir(resolvedUserPath, extension);
+    } else {
+      throw new Error('The specified path is not a directory.');
+    }
+  })
+  .then((files) => {
+    console.log(files);
+  })
+  .catch
+
+
+/* 
+isDir(resolvedUserPath, (err, isDirectory) => {
   if (err) {
-    return console.error(err);
+    console.error(err);
+    return;
   }
 
-  files.forEach(file => console.log(file));
-});
-
+  if (isDirectory) {
+    findFilesInDir(resolvedUserPath, ext  => {
+   
+      files.forEach(file => {
+        
+        
+        readFile(file, (err, content) => {
+          if (err) {
+            console.error(err);
+            return;
+          }
+          console.log(content);
+          });
+      }); 
+    });
+  } else {
+    if (extMd(resolvedUserPath)){
+      console.log('file is md')
+    } else {
+      console.log('file is not md')
+    }
+  }
+}); */
