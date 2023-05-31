@@ -1,5 +1,7 @@
-const fs = require('fs')
-const path = require('path')
+const fs = require('fs');
+const path = require('path');
+const https = require('https');
+
 
 const absolutePath = (userPath) => path.isAbsolute(userPath);
 const resolvePath = (userPath) => path.resolve(userPath);
@@ -40,21 +42,21 @@ function findFilesInDir(directory, extension = '.md') {
     return filteredFiles;
   }
 
-  function readFile(filePath) {
-    return new Promise((resolve, reject) => {
-      fs.readFile(filePath, 'utf8', (err, data) => {
-        if (err) {
-          reject(err);
-          return;
-        }
+function readFile(filePath) {
+  return new Promise((resolve, reject) => {
+    fs.readFile(filePath, 'utf8', (err, data) => {
+      if (err) {
+        reject(err);
+        return;
+      }
   
-        resolve(data);
-      });
+      resolve(data);
     });
-  }
+  });
+}
   
   function findLinksInContent(content, filePath) {
-    const linkRegex = /\[([^\]]+)\]\(([^\)]+)\)/g;
+    const linkRegex = /\[([^\]]+)\]\((?!#)([^\)]+)\)/g; //regular expression first matches [text] & then (text) except if it starts with #
     const links = [];
     let match;
   
@@ -67,6 +69,17 @@ function findFilesInDir(directory, extension = '.md') {
     return links;
   }
 
+  function validateLink(url) {
+    return new Promise((resolve, reject) => {
+      https.get(url, (res) => {
+        resolve(res.statusCode);
+      }).on('error', (err) => {
+        reject(err);
+      });
+    });
+  }
+  
+
 module.exports = {
   absolutePath,
   resolvePath, 
@@ -75,6 +88,7 @@ module.exports = {
   isDir,
   readFile, 
   findLinksInContent,
+  validateLink,
 };
 
 /* function findFilesInDir(directory, extension = '.md', callback) {
