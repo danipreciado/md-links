@@ -8,17 +8,19 @@ const {
   findLinksInContent, 
   validateLink } = require('./functions.js')
 
-const userPath = process.argv[2];
+/* const userPath = process.argv[2];
 const extension = process.argv[3];
+ */
 
-function mdlinks(path, options = { validate: false }) {
+function mdLinks(userPath, options = { validate: false }) {
   
   const resolvedUserPath = absolutePath(userPath) ? userPath : resolvePath(userPath);
+  console.log(resolvedUserPath)
 
   isDir(resolvedUserPath)
   .then((isDirectory) => {
     if (isDirectory) {
-      return findFilesInDir(resolvedUserPath, extension);
+      return findFilesInDir(resolvedUserPath);
     } else {
       return [resolvedUserPath]; // for single files
     }
@@ -32,11 +34,12 @@ function mdlinks(path, options = { validate: false }) {
           const linkPromises = links.map((link) => {
           
             return validateLink(link.href)
-              .then((statusCode) => {
-                return { ...link, statusCode};
+              .then(({ statusCode, statusMessage }) => {
+                
+                return { ...link, status:statusCode, message:statusMessage};
               })
               .catch((error) => {
-                return { ...link, statusCode: -1, error: error.message };
+                return { ...link, statusCode: 404, error: error.message }; //i need to review this
               });
             })
             return Promise.all(linkPromises);
@@ -52,15 +55,12 @@ function mdlinks(path, options = { validate: false }) {
   })
   .then((results) => {
     const flattenedLinks = results.flat(); // It was giving me multiple arrays, this converts it into a single array, multiple objs
-    const modifiedLinks = flattenedLinks.map((link) => {
-      return {
-        href: link.href,
-        text: link.text,
-        file: link.file,
-        status: link.statusCode,
-      };
-    });
-    console.log(modifiedLinks);
+    
+    if (flattenedLinks.length === 0) {
+      console.error("No links found in the specified files or file.");
+    } else {
+      console.log(flattenedLinks)
+    }
   })
   .catch((err) => {
     console.error(err);
@@ -68,4 +68,6 @@ function mdlinks(path, options = { validate: false }) {
 
 }
 
-mdlinks(userPath, options = { validate: true})
+/* mdLinks(userPath, options = { validate: true})
+ */
+module.exports = { mdLinks };
