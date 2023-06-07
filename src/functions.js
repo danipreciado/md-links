@@ -37,8 +37,13 @@ function findFilesInDir(directory, extension = '.md') {
       } else if (path.extname(file) === extension) {
           filteredFiles.push(filePath);
       }
+      
     });
   
+   /*  if (filteredFiles.length === 0){
+      throw new Error('No files with .md extension were found')
+    }
+ */
     return filteredFiles;
   }
 
@@ -65,14 +70,16 @@ function readFile(filePath) {
       const linkUrl = match[2];
       links.push({ href: linkUrl, text: linkText, file: filePath  });
     }
-  
+    
     return links;
   }
 
   function validateLink(url) {
     return new Promise((resolve, reject) => {
       https.get(url, (res) => {
-        resolve(res.statusCode);
+        const { statusCode, statusMessage } = res;
+
+        resolve({ statusCode, statusMessage });
       }).on('error', (err) => {
         reject(err);
       });
