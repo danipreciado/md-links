@@ -4,7 +4,16 @@ const https = require('https');
 
 
 const absolutePath = (userPath) => path.isAbsolute(userPath);
+
 const resolvePath = (userPath) => path.resolve(userPath);
+
+function pathExists(path) {
+  return new Promise((resolve) => {
+    fs.access(path, fs.constants.F_OK, (err) => {
+      resolve(!err);
+    });
+  });
+}
 const extMd = (userPath) => path.extname(userPath) === '.md';
 
 function isDir(userPath) {
@@ -77,9 +86,16 @@ function readFile(filePath) {
   function validateLink(url) {
     return new Promise((resolve, reject) => {
       https.get(url, (res) => {
-        const { statusCode, statusMessage } = res;
-
-        resolve({ statusCode, statusMessage });
+        const { statusCode } = res;
+        let message;
+  
+        if (statusCode >= 400) {
+          message = 'fail';
+        } else {
+          message = 'ok';
+        }
+  
+        resolve({ statusCode, message });
       }).on('error', (err) => {
         reject(err);
       });
@@ -90,6 +106,7 @@ function readFile(filePath) {
 module.exports = {
   absolutePath,
   resolvePath, 
+  pathExists,
   extMd,
   findFilesInDir,
   isDir,
