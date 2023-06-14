@@ -8,9 +8,12 @@ const absolutePath = (userPath) => path.isAbsolute(userPath);
 const resolvePath = (userPath) => path.resolve(userPath);
 
 function pathExists(path) {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => { //add reject
     fs.access(path, fs.constants.F_OK, (err) => {
-      resolve(!err);
+      if (err){
+        reject('Path does not exist')
+      }
+      resolve(true);
     });
   });
 }
@@ -28,9 +31,9 @@ function isDir(userPath) {
   });
 }
 
-function filterFiles(files, extension) {
+/* function filterFiles(files, extension) {
   return files.filter(file => path.extname(file) === extension);
-}
+} */
  
 function findFilesInDir(directory, extension = '.md') {
     const files = fs.readdirSync(directory);
@@ -49,12 +52,8 @@ function findFilesInDir(directory, extension = '.md') {
       
     });
   
-   /*  if (filteredFiles.length === 0){
-      throw new Error('No files with .md extension were found')
-    }
- */
-    return filteredFiles;
-  }
+  return filteredFiles;
+}
 
 function readFile(filePath) {
   return new Promise((resolve, reject) => {
@@ -70,7 +69,7 @@ function readFile(filePath) {
 }
   
   function findLinksInContent(content, filePath) {
-    const linkRegex = /\[([^\]]+)\]\((?!#)([^\)]+)\)/g; //regular expression first matches [text] & then (text) except if it starts with #
+    const linkRegex = /\[([^\]]+)\]\((?!#)(https?:\/\/[^\)]+)\)/g; //regular expression first matches [text] & then (text) except if it starts with #
     const links = [];
     let match;
   
@@ -85,11 +84,11 @@ function readFile(filePath) {
 
   function validateLink(url) {
     return new Promise((resolve, reject) => {
-      https.get(url, (res) => {
+      https.get(url, (res) => { 
         const { statusCode } = res;
         let message;
   
-        if (statusCode >= 400) {
+        if (statusCode >= 400 ) {
           message = 'fail';
         } else {
           message = 'ok';
@@ -97,8 +96,14 @@ function readFile(filePath) {
   
         resolve({ statusCode, message });
       }).on('error', (err) => {
-        reject(err);
-      });
+        
+        if (err.code === 'ENOTFOUND') {
+          
+          resolve({ statusCode: 404, message: 'fail' });
+        } 
+      }).on('close', () => {
+        resolve({ statusCode: 0, message: 'connection_issue' });
+      })
     });
   }
   

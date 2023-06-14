@@ -1,26 +1,3 @@
-let arrayOfObjects = [  
-    {
-      href: 'https://es.wikipedia.org/wiki/Markdown',
-      text: 'prueba',
-      file: 'C:\\Users\\danis\\OneDrive\\Escritorio\\Laboratoria\\md-links\\demo\\carpeta\\archivorecursive.md',
-      status: 200,
-      message: 'ok'
-    },
-    {
-      href: 'https://es.wikipedia.org/wiki/Markdown',
-      text: 'Markdown',
-      file: 'C:\\Users\\danis\\OneDrive\\Escritorio\\Laboratoria\\md-links\\demo\\readme2.md',
-      status: 200,
-      message: 'ok'
-    },
-    {
-      href: 'https://es.wikipedia.org/wika',
-      text: 'brokenlinklol',
-      file: 'C:\\Users\\danis\\OneDrive\\Escritorio\\Laboratoria\\md-links\\demo\\readme2.md',
-      status: 404,
-      message: 'fail'
-    }
-  ]
 
 function brokenLinks (arrayOfObjects) {
     let broken = 0;
