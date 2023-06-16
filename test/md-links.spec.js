@@ -1,31 +1,21 @@
 const mdLinks = require('../src/index.js');
+const path = require('path');
 
-
+const currentDirectory = __dirname;
+const projectDirectory = path.resolve(currentDirectory, '..');
+const readme2Path = path.join(projectDirectory, 'demo', 'readme2.md');
 const realResult = [
   {
     href: 'https://es.wikipedia.org/wiki/Markdown',
     text: 'Markdown',
-    file: 'C:\\Users\\danis\\OneDrive\\Escritorio\\Laboratoria\\md-links\\demo\\readme2.md'
+    file: readme2Path,
   },
   {
     href: 'https://es.wikipedia.org/wika',
     text: 'brokenlinklol',
-    file: 'C:\\Users\\danis\\OneDrive\\Escritorio\\Laboratoria\\md-links\\demo\\readme2.md'
+    file: readme2Path,
   }
-]; 
-
-const array2 = [
-  {
-    href: 'https://es.wikipedia.org/wiki/Markdown',
-    text: 'Markdown',
-    file: 'C:/Users/danis/OneDrive/Escritorio/Laboratoria/md-links/demo/readme2.md'
-  },
-  {
-    href: 'https://es.wikipedia.org/wika',
-    text: 'brokenlinklol',
-    file: 'C:/Users/danis/OneDrive/Escritorio/Laboratoria/md-links/demo/readme2.md'
-  }
-]; 
+];
 describe('mdLinks', () => {
  
     it('should be a function', () => {
@@ -58,7 +48,7 @@ describe('mdLinks', () => {
       const userPath = './demo/readme2.md';
       const options = { validate: true };
     
-      // Mock the validateLink function to return a specific result
+      // Mock 
       jest.mock('../src/functions.js', () => ({
         ...jest.requireActual('../src/functions.js'),
         validateLink: jest.fn(() => Promise.resolve({ statusCode: 200, message: 'OK' })),
@@ -66,7 +56,7 @@ describe('mdLinks', () => {
     
       return mdLinks(userPath, options)
         .then((result) => {
-          // Expect each link to have a status and message property
+          
           result.forEach((link) => {
             expect(link).toHaveProperty('status');
             expect(link).toHaveProperty('message');
@@ -79,17 +69,18 @@ describe('mdLinks', () => {
       
       return mdLinks(userPath)
         .then((result) => {
+          console.log('this is result', result)
           // Expect the result to be an array of links from all files in the directory
           expect(result).toEqual(expect.arrayContaining(realResult));
         });
     });
 
     it('should handle an absolute path', () => {
-      const userPath = 'C:/Users/danis/OneDrive/Escritorio/Laboratoria/md-links/demo/readme2.md';
-  
+      
+      const userPath = readme2Path
       return mdLinks(userPath)
         .then((result) => {
-          expect(result).toEqual(array2);
+          expect(result).toEqual(realResult);
         });
     });
 
