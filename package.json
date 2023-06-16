@@ -1,6 +1,6 @@
 {
-  "name": "md-links",
-  "version": "0.1.0",
+  "name": "md-links-danipreciado",
+  "version": "0.1.5",
   "engines": {
     "node": ">=16.x"
   },
@@ -10,9 +10,11 @@
     "commit": "6de8e2f7e38d779fd6845c63477977fb1eb3af99"
   },
   "dependencies": {
-    "cfonts": "^3.2.0"
+    "cfonts": "^3.2.0",
+    "chalk": "^4.1.2",
+    "md-links-danipreciado": "^0.1.2"
   },
-  "main": "index.js",
+  "main": "./src/index.js",
   "directories": {
     "test": "test"
   },

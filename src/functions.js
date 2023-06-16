@@ -17,7 +17,12 @@ function pathExists(path) {
     });
   });
 }
-const extMd = (userPath) => path.extname(userPath) === '.md';
+const extMd = (userPath) => {
+  if (path.extname(userPath) !== '.md') {
+    throw new Error('Invalid file format. Only .md files are supported.');
+  }
+  return true;
+};
 
 function isDir(userPath) {
   return new Promise((resolve, reject) => {
@@ -31,10 +36,6 @@ function isDir(userPath) {
   });
 }
 
-/* function filterFiles(files, extension) {
-  return files.filter(file => path.extname(file) === extension);
-} */
- 
 function findFilesInDir(directory, extension = '.md') {
     const files = fs.readdirSync(directory);
     let filteredFiles = [];
@@ -52,6 +53,9 @@ function findFilesInDir(directory, extension = '.md') {
       
     });
   
+    if (filteredFiles.length === 0){
+      throw new Error('No .md files found');
+    }
   return filteredFiles;
 }
 
@@ -120,27 +124,3 @@ module.exports = {
   validateLink,
 };
 
-/* function findFilesInDir(directory, extension = '.md', callback) {
- 
-    fs.readdir(directory, (err, files) => {
-      if (err) {
-        return callback(err);
-      }
-
-      files.forEach(file => {
-      
-        const filePath = path.join(directory, file);
-        
-        fs.stat(filePath, (err, stats) => {
-          if(stats.isDirectory()) {
-            findFilesInDir(filePath, extension, callback)
-          }
-        })
-      
-      })
-     
-      filteredFiles = filterFiles(files, extension);
-      
-      callback(null, filteredFiles);
-    });
-  }; */ 

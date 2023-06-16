@@ -4,7 +4,8 @@ const {
   resolvePath,
   pathExists,
   findFilesInDir, 
-  isDir, 
+  isDir,
+  extMd,
   readFile, 
   findLinksInContent, 
   validateLink } = require('./functions.js')
@@ -21,6 +22,7 @@ function mdLinks(userPath, options = { validate: false }) {
       if (isDirectory) {
         return findFilesInDir(resolvedUserPath);
       } else {
+        extMd(resolvedUserPath);
         return [resolvedUserPath]; // for single files
       }
     })
@@ -46,7 +48,7 @@ function mdLinks(userPath, options = { validate: false }) {
     return Promise.all(promises);
     })
     .then((results) => {
-      const flattenedLinks = results.flat(); // It was giving me multiple arrays, this converts it into a single array, multiple objs
+      const flattenedLinks = results.flat(); //converts it into a single array, multiple objs
       resolve(flattenedLinks.length === 0 ? [] : flattenedLinks)
   })
     .catch((err) => {
