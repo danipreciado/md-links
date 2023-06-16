@@ -7,26 +7,27 @@ This is an npm package for extracting and analyzing links from Markdown files. I
 To install the package, use the following command:
 
 
-``shell
+```
 npm install md-links-danipreciado 
-or 
+```
+```
 npm install danipreciado/md-links
-
 ```
 
 To install the command line globally, run: 
 
-``shell
+
+``
 npm install -g md-links-danipreciado 
-```
+``
 
 ## Usage
 
 To use the md-links-cli tool, run the following command in your terminal:
 
-``shell
+```
 md-links <path> [--validate] [--stats]
-``
+```
 
 Replace `<path>` with the path to the directory or file containing the Markdown files you want to analyze.
 
@@ -43,25 +44,25 @@ You can use either one or both options together.
 
 To extract and display all the links in a directory without any validation or statistics:
 
-``shell
+```
 md-links /path/to/directory
-``
+```
 
 To extract and validate the status of each link in a directory:
 
-``shell
+```
 md-links /path/to/directory --validate
-``
+```
 
 To extract and display basic statistics of the links in a directory:
 
-``shell
+```
 md-links /path/to/directory --stats
-``
+```
 
 To extract, validate, and display complex statistics of the links in a directory:
 
-``shell
+``
 md-links /path/to/directory --validate --stats
 ``
 ## Output
