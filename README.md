@@ -6,10 +6,12 @@ This is an npm package for extracting and analyzing links from Markdown files. I
 
 To install the package, use the following command:
 
+
 ``shell
 npm install md-links-danipreciado 
 or 
 npm install danipreciado/md-links
+
 ```
 
 To install the command line globally, run: 
