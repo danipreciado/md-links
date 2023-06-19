@@ -34,17 +34,17 @@ function simpleStats(arrayOfObjects) {
     const unique = uniqueLinks(arrayOfObjects);
   
     return `Total: ${totalLinks}\nUnique: ${unique}`;
-  }
+}
   
-  function complexStats(arrayOfObjects) {
+function complexStats(arrayOfObjects) {
     const totalLinks = linksQty(arrayOfObjects);
     const unique = uniqueLinks(arrayOfObjects);
     const broken = brokenLinks(arrayOfObjects);
   
     return `Total: ${totalLinks}\nUnique: ${unique}\nBroken: ${broken}`;
-  }
+}
 
-  module.exports = {
+module.exports = {
     simpleStats,
     complexStats,
   };
