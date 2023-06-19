@@ -39,7 +39,7 @@ describe('mdLinks', () => {
         });
       });
     
-    it('should handle a non-existent file', () => {
+    it('should return empty array when no links were found', () => {
       const userPath = './demo/archivosinlink.md';
       return expect(mdLinks(userPath)).resolves.toEqual([]);
     });

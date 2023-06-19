@@ -37,25 +37,25 @@ function isDir(userPath) {
 }
 
 function findFilesInDir(directory, extension = '.md') {
-    const files = fs.readdirSync(directory);
-    let filteredFiles = [];
+  const files = fs.readdirSync(directory);
+  let filteredFiles = [];
   
-    files.forEach(file => {
-      const filePath = path.join(directory, file);
-      const stats = fs.statSync(filePath);
+  files.forEach(file => {
+    const filePath = path.join(directory, file);
+    const stats = fs.statSync(filePath);
   
-      if (stats.isDirectory()) {
-        const subDirectoryFiles = findFilesInDir(filePath, extension);
-        filteredFiles = filteredFiles.concat(subDirectoryFiles);
-      } else if (path.extname(file) === extension) {
-          filteredFiles.push(filePath);
-      }
-      
-    });
-  
-    if (filteredFiles.length === 0){
-      throw new Error('No .md files found');
+    if (stats.isDirectory()) {
+      const subDirectoryFiles = findFilesInDir(filePath, extension);
+      filteredFiles = filteredFiles.concat(subDirectoryFiles);
+    } else if (path.extname(file) === extension) {
+      filteredFiles.push(filePath);
     }
+      
+  });
+  
+  if (filteredFiles.length === 0){
+    throw new Error('No .md files found');
+  }
   return filteredFiles;
 }
 
@@ -72,44 +72,43 @@ function readFile(filePath) {
   });
 }
   
-  function findLinksInContent(content, filePath) {
-    const linkRegex = /\[([^\]]+)\]\((?!#)(https?:\/\/[^\)]+)\)/g; //regular expression first matches [text] & then (text) except if it starts with #
-    const links = [];
-    let match;
+function findLinksInContent(content, filePath) {
+  const linkRegex = /\[([^\]]+)\]\((?!#)(https?:\/\/[^\)]+)\)/g; //regular expression first matches [text] & then (text) except if it starts with #
+  const links = [];
+  let match;
   
-    while ((match = linkRegex.exec(content)) !== null) {
-      const linkText = match[1];
-      const linkUrl = match[2];
-      links.push({ href: linkUrl, text: linkText, file: filePath  });
-    }
+  while ((match = linkRegex.exec(content)) !== null) {
+    const linkText = match[1];
+    const linkUrl = match[2];
+    links.push({ href: linkUrl, text: linkText, file: filePath  });
+  }
     
-    return links;
-  }
+  return links;
+}
 
-  function validateLink(url) {
-    return new Promise((resolve, reject) => {
-      https.get(url, (res) => { 
-        const { statusCode } = res;
-        let message;
+function validateLink(url) {
+  return new Promise((resolve) => {
+    https.get(url, (res) => { 
+      const { statusCode } = res;
+      let message;
   
-        if (statusCode >= 400 ) {
-          message = 'fail';
-        } else {
-          message = 'ok';
-        }
+      if (statusCode >= 400 ) {
+        message = 'fail';
+      } else {
+        message = 'ok';
+      }
   
-        resolve({ statusCode, message });
-      }).on('error', (err) => {
+      resolve({ statusCode, message });
+    }).on('error', (err) => {
         
-        if (err.code === 'ENOTFOUND') {
-          
-          resolve({ statusCode: 404, message: 'fail' });
-        } 
-      }).on('close', () => {
-        resolve({ statusCode: 0, message: 'connection_issue' });
-      })
-    });
-  }
+      if (err.code === 'ENOTFOUND') {  
+        resolve({ statusCode: 404, message: 'fail' });
+      } 
+    }).on('close', () => {
+      resolve({ statusCode: 0, message: 'connection_issue' });
+    })
+  });
+}
   
 
 module.exports = {
